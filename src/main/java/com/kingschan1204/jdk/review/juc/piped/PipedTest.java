@@ -14,6 +14,7 @@ public class PipedTest {
 
     public static void main(String[] args) throws Exception {
 
+        // java 管道  类似线程消费者模式 -> 适应于一对一的场景
         PipedOutputStream outputStream = new PipedOutputStream();
         PipedInputStream inputStream = new PipedInputStream(outputStream);
 
