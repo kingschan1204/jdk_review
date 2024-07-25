@@ -24,38 +24,54 @@ public class SynchronizedTest {
     //    性能影响：synchronized 会引入一些性能开销，尤其是在高并发环境中。因此，应在实际需要时才使用，并尽量优化同步代码块的效率。
 
 
-
     //////////////////////////////////////////////////////////////////////
-    public synchronized void type1A(){
-        log.info("{} start  ",Thread.currentThread().getName());
+    public synchronized void type1A() {
+        log.info("{} start  ", Thread.currentThread().getName());
         try {
             TimeUnit.SECONDS.sleep(1);
-        } catch (Exception e) {}
-        log.info("{} end  ",Thread.currentThread().getName());
+        } catch (Exception e) {
+        }
+        log.info("{} end  ", Thread.currentThread().getName());
     }
 
-    public synchronized void type1B(){
-        log.info("{} start  ",Thread.currentThread().getName());
+    public synchronized void type1B() {
+        log.info("{} start  ", Thread.currentThread().getName());
         try {
             TimeUnit.SECONDS.sleep(1);
-        } catch (Exception e) {}
-        log.info("{} end  ",Thread.currentThread().getName());
+        } catch (Exception e) {
+        }
+        log.info("{} end  ", Thread.currentThread().getName());
     }
 
     //////////////////////////////////////////////////////////////////
 
-    public static synchronized void type2A(){
-        log.info("{} start  ",Thread.currentThread().getName());
+    public static synchronized void type2A() {
+        log.info("{} start  ", Thread.currentThread().getName());
         try {
             TimeUnit.SECONDS.sleep(1);
-        } catch (Exception e) {}
-        log.info("{} end  ",Thread.currentThread().getName());
+        } catch (Exception e) {
+        }
+        log.info("{} end  ", Thread.currentThread().getName());
     }
+
+
+    public void type3A() {
+        synchronized (this) {
+            log.info("{} start  ", Thread.currentThread().getName());
+            try {
+                TimeUnit.SECONDS.sleep(1);
+            } catch (Exception e) {
+            }
+            log.info("{} end  ", Thread.currentThread().getName());
+        }
+
+    }
+
 
     /**
      * synchronized修饰不同对象的两个非静态方法时不会互斥
      */
-    public static void test1(){
+    public static void test1() {
 
         new Thread(() -> {
             // 这里new 了一个SynchronizedTest对象
@@ -71,7 +87,7 @@ public class SynchronizedTest {
     /**
      * synchronized static方法互斥
      */
-    public static void test2(){
+    public static void test2() {
 
         new Thread(() -> {
             // 这里new 了一个SynchronizedTest对象
@@ -84,10 +100,28 @@ public class SynchronizedTest {
         }).start();
     }
 
+    /**
+     * 代码块是this 锁的是实例 同一个实例互斥  不同实例对象不影响
+     */
+    public static void test3() {
+        SynchronizedTest synchronizedTest = new SynchronizedTest();
+        new Thread(() -> {
+            // 这里new 了一个SynchronizedTest对象
+            synchronizedTest.type3A();
+        }).start();
+
+        new Thread(() -> {
+            // 这里new 了另一个SynchronizedTest对象
+            synchronizedTest.type3A();
+        }).start();
+    }
+
     public static void main(String[] args) {
 
 //        test1();
-        test2();
+//        test2();
+        //代码块是this 锁的是实例 同一个实例互斥  不同实例对象不影响
+        test3();
 
     }
 }
