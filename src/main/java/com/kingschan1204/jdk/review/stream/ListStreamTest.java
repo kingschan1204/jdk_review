@@ -25,6 +25,7 @@ public class ListStreamTest {
             new UserDto(5, "小乔", 17, "女")
     );
 
+    @DisplayName("group by分组")
     @Test
     public void groupTest() {
         // 根据性别分组
@@ -32,18 +33,18 @@ public class ListStreamTest {
         System.out.println(map);
     }
 
+    @DisplayName("根据性别分组 取年龄最大的那个")
     @Test
     public void groupLimitTest() {
-        // 根据性别分组 取年龄最大的那个
         Map<String, UserDto> map = list.stream().collect(Collectors.groupingBy(UserDto::getSex,
                 Collectors.collectingAndThen(Collectors.toList(), value -> value.stream().max(Comparator.comparing(UserDto::getAge)).get())
                 ));
         System.out.println(map);
     }
 
+    @DisplayName("根据性别分组 过滤年龄小于18岁的")
     @Test
     public void groupFilterTest() {
-        // 根据性别分组 过滤年龄小于18岁的
         Map<String, List<UserDto>> map = list.stream().collect(Collectors.groupingBy(UserDto::getSex,
                 Collectors.collectingAndThen(Collectors.toList(), value -> value.stream().filter( u -> u.getAge() >= 18).collect(Collectors.toList()))
         ));
