@@ -4,10 +4,8 @@ import com.kingschan1204.jdk.review.stream.dto.UserDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.text.Collator;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -49,5 +47,31 @@ public class ListStreamTest {
                 Collectors.collectingAndThen(Collectors.toList(), value -> value.stream().filter( u -> u.getAge() >= 18).collect(Collectors.toList()))
         ));
         System.out.println(map);
+    }
+
+    @DisplayName("排序")
+    @Test
+    public void sortAsc(){
+        List<UserDto> userList = list.stream().sorted(Comparator.comparing(UserDto::getNo)).collect(Collectors.toList());
+        System.out.println(userList);
+    }
+
+    @DisplayName("倒序")
+    @Test
+    public void sortDesc(){
+        List<UserDto> userList = list.stream().sorted(Comparator.comparing(UserDto::getNo).reversed()).collect(Collectors.toList());
+        System.out.println(userList);
+    }
+
+    @DisplayName("按中文排序")
+    @Test
+    public void sortByCn(){
+        list.sort((s1, s2) -> {
+            //会按首字母进行排序
+            Comparator<Object> comparator = Collator.getInstance(Locale.CHINA);
+            return comparator.compare(s1.getName(), s2.getName());
+        });
+        System.out.println(list);
+
     }
 }
