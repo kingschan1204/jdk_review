@@ -34,38 +34,38 @@ public class ListStreamTest {
     @DisplayName("根据性别分组 取年龄最大的那个")
     @Test
     public void groupLimitTest() {
-        Map<String, UserDto> map = list.stream().collect(Collectors.groupingBy(UserDto::getSex,
-                Collectors.collectingAndThen(Collectors.toList(), value -> value.stream().max(Comparator.comparing(UserDto::getAge)).get())
-                ));
+        Map<String, UserDto> map = list.stream().collect(Collectors.groupingBy(UserDto::getSex, Collectors.collectingAndThen(Collectors.toList(), value -> value.stream().max(Comparator.comparing(UserDto::getAge)).get())));
         System.out.println(map);
     }
 
     @DisplayName("根据性别分组 过滤年龄小于18岁的")
     @Test
     public void groupFilterTest() {
-        Map<String, List<UserDto>> map = list.stream().collect(Collectors.groupingBy(UserDto::getSex,
-                Collectors.collectingAndThen(Collectors.toList(), value -> value.stream().filter( u -> u.getAge() >= 18).collect(Collectors.toList()))
-        ));
+        Map<String, List<UserDto>> map = list.stream().collect(
+                Collectors.groupingBy(UserDto::getSex,
+                        Collectors.collectingAndThen(
+                                Collectors.toList(), value -> value.stream().filter(u -> u.getAge() >= 18).collect(Collectors.toList())))
+        );
         System.out.println(map);
     }
 
     @DisplayName("排序")
     @Test
-    public void sortAsc(){
+    public void sortAsc() {
         List<UserDto> userList = list.stream().sorted(Comparator.comparing(UserDto::getNo)).collect(Collectors.toList());
         System.out.println(userList);
     }
 
     @DisplayName("倒序")
     @Test
-    public void sortDesc(){
+    public void sortDesc() {
         List<UserDto> userList = list.stream().sorted(Comparator.comparing(UserDto::getNo).reversed()).collect(Collectors.toList());
         System.out.println(userList);
     }
 
     @DisplayName("按中文排序")
     @Test
-    public void sortByCn(){
+    public void sortByCn() {
         list.sort((s1, s2) -> {
             //会按首字母进行排序
             Comparator<Object> comparator = Collator.getInstance(Locale.CHINA);
@@ -73,5 +73,26 @@ public class ListStreamTest {
         });
         System.out.println(list);
 
+    }
+
+    @DisplayName("list对象转map")
+    @Test
+    public void toMap() {
+        Map<String, String> map = list.stream().collect(Collectors.toMap(UserDto::getName, UserDto::getSex));
+        System.out.println(map);
+    }
+
+    @DisplayName("找出最大的对象")
+    @Test
+    public void toSet() {
+        Optional<UserDto> user = list.stream().max(Comparator.comparingInt(UserDto::getAge));
+        System.out.println(user);
+    }
+
+    @DisplayName("求平均年纪")
+    @Test
+    public void averageAge() {
+       double average = list.stream().mapToInt(UserDto::getAge).average().orElse(0);
+        System.out.println(average);
     }
 }
